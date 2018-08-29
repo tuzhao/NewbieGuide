@@ -229,8 +229,12 @@ public class Controller {
      * 如果有设置结束动画，则会调用结束动画
      */
     public void removeByAnim() {
+        if (null == currentLayout) {
+            LogUtil.w("remove by anim,but currentLayout is null...");
+            return;
+        }
         final ViewParent temp = currentLayout.getParent();
-        if (currentLayout != null && temp != null) {
+        if (temp != null) {
             currentLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
                 @Override
                 public void onGuideLayoutDismiss(GuideLayout guideLayout) {
