@@ -5,25 +5,19 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.app.hubert.guide.NewbieGuide;
 import com.app.hubert.guide.lifecycle.FragmentLifecycleAdapter;
 import com.app.hubert.guide.lifecycle.ListenerFragment;
 import com.app.hubert.guide.lifecycle.V4ListenerFragment;
 import com.app.hubert.guide.listener.OnGuideChangedListener;
-import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
-import com.app.hubert.guide.model.RelativeGuide;
 import com.app.hubert.guide.util.LogUtil;
-import com.app.hubert.guide.util.ScreenUtils;
 
 import java.lang.reflect.Field;
 import java.security.InvalidParameterException;
@@ -227,6 +221,40 @@ public class Controller {
                 onGuideChangedListener.onRemoved(this);
             }
             currentLayout = null;
+        }
+    }
+
+    /**
+     * 中断引导层的显示，后续未显示的page将不再显示
+     * 如果有设置结束动画，则会调用结束动画
+     */
+    public void removeByAnim() {
+        final ViewParent temp = currentLayout.getParent();
+        if (currentLayout != null && temp != null) {
+            currentLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
+                @Override
+                public void onGuideLayoutDismiss(GuideLayout guideLayout) {
+                    ViewGroup parent = (ViewGroup) temp;
+                    parent.removeView(currentLayout);
+                    //移除anchor添加的frameLayout
+                    if (!(parent instanceof FrameLayout)) {
+                        ViewGroup original = (ViewGroup) parent.getParent();
+                        View anchor = parent.getChildAt(0);
+                        parent.removeAllViews();
+                        if (anchor != null) {
+                            if (indexOfChild > 0) {
+                                original.addView(anchor, indexOfChild, parent.getLayoutParams());
+                            } else {
+                                original.addView(anchor, parent.getLayoutParams());
+                            }
+                        }
+                    }
+                    if (onGuideChangedListener != null) {
+                        onGuideChangedListener.onRemoved(Controller.this);
+                    }
+                }
+            });
+            currentLayout.remove();
         }
     }
 
