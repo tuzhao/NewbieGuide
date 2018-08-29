@@ -15,24 +15,36 @@ public class LogUtil {
     private static final int NONE = 8;
     private static final String tagPrefix = NewbieGuide.TAG;
 
-
     /**
      * 修改打印级别
      */
-    public static final int level = NONE;
-//    public static final int level = Log.VERBOSE;
+    private static int level = NONE;
+
+    /**
+     * 对外开发一个设置log输出级别的方法
+     *
+     * @param logLevel 定义在android.util.Log类中得几种log级别
+     */
+    public static void setLogLevel(int logLevel) {
+        level = logLevel;
+    }
 
     /**
      * 得到tag（所在类.方法（L:行））
      */
     private static String generateTag() {
-        StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
-        String callerClazzName = stackTraceElement.getClassName();
-        callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1);
-        String tag = "%s.%s(L:%d)";
-        tag = String.format(Locale.CHINA, tag, callerClazzName, stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
-        //给tag设置前缀
-        tag = TextUtils.isEmpty(tagPrefix) ? tag : tagPrefix + ":" + tag;
+        String tag = tagPrefix;
+        try {
+            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[4];
+            String callerClazzName = stackTraceElement.getClassName();
+            callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1);
+            tag = "%s.%s(L:%d)";
+            tag = String.format(Locale.CHINA, tag, callerClazzName, stackTraceElement.getMethodName(), stackTraceElement.getLineNumber());
+            //给tag设置前缀
+            tag = TextUtils.isEmpty(tagPrefix) ? tag : tagPrefix + ":" + tag;
+        } catch (Exception e) {
+            Log.w("LogUtil", "generate tag error", e);
+        }
         return tag;
     }
 
