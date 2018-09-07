@@ -3,6 +3,31 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.huburt-Hu'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'guide'
+
+    publishedGroupId = 'org.tuzhao.guide'
+    libraryName = 'guide'
+    artifact = 'guide'
+
+    libraryDescription = 'View Guide For Android'
+
+    siteUrl = 'https://github.com/tuzhao/NewbieGuide'
+    gitUrl = 'git@github.com:tuzhao/NewbieGuide.git'
+
+    //this variable defined in gradle.properties
+    libraryVersion = LIBRARY_VERSION as String
+
+    developerId = 'tuzhao'
+    developerName = 'tuzhao'
+    developerEmail = 'tuzhaocn@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -25,3 +50,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
 }
+
+// upload command
+// ./gradlew clean build bintrayUpload -PdryRun=false
+
+apply from: 'bintrayv1.gradle'
+apply from: 'installv1.gradle'
