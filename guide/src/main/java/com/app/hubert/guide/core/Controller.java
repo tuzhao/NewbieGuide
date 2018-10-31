@@ -48,6 +48,7 @@ public class Controller {
     private FrameLayout mParentView;
     private SharedPreferences sp;
     private int indexOfChild = -1;//使用anchor时记录的在父布局的位置
+    boolean isDrawShadowInHighLight;//是否需要在高亮区域显示阴影
 
     public Controller(Builder builder) {
         this.activity = builder.activity;
@@ -58,6 +59,7 @@ public class Controller {
         this.label = builder.label;
         this.alwaysShow = builder.alwaysShow;
         this.guidePages = builder.guidePages;
+        this.isDrawShadowInHighLight = builder.isDrawShadowInHighLight;
         showCounts = builder.showCounts;
 
         View anchor = builder.anchor;

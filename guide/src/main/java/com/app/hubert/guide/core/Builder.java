@@ -23,6 +23,7 @@ public class Builder {
     OnGuideChangedListener onGuideChangedListener;
     OnPageChangedListener onPageChangedListener;
     List<GuidePage> guidePages = new ArrayList<>();
+    boolean isDrawShadowInHighLight;//是否需要在高亮区域显示阴影
 
     public Builder(Activity activity) {
         this.activity = activity;
@@ -67,6 +68,17 @@ public class Builder {
      */
     public Builder alwaysShow(boolean b) {
         this.alwaysShow = b;
+        return this;
+    }
+
+    /**
+     * 是否需要在高亮区域边界里面一点绘制阴影
+     *
+     * @param flag true 需要绘制阴影 false 不需要
+     * @return Builder
+     */
+    public Builder isDrawShadowInHighLight(boolean flag) {
+        this.isDrawShadowInHighLight = flag;
         return this;
     }
 
