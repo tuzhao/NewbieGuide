@@ -49,6 +49,7 @@ public class Controller {
     private SharedPreferences sp;
     private int indexOfChild = -1;//使用anchor时记录的在父布局的位置
     boolean isDrawShadowInHighLight;//是否需要在高亮区域显示阴影
+    private boolean isShowing;
 
     public Controller(Builder builder) {
         this.activity = builder.activity;
@@ -99,6 +100,10 @@ public class Controller {
             }
         }
 
+        if (isShowing) {
+            return;
+        }
+        isShowing = true;
         mParentView.post(new Runnable() {
             @Override
             public void run() {
@@ -169,6 +174,7 @@ public class Controller {
         if (onPageChangedListener != null) {
             onPageChangedListener.onPageChanged(current);
         }
+        isShowing = true;
     }
 
     private void showNextOrRemove() {
@@ -180,6 +186,7 @@ public class Controller {
                 onGuideChangedListener.onRemoved(Controller.this);
             }
             removeListenerFragment();
+            isShowing = false;
         }
     }
 
@@ -224,6 +231,11 @@ public class Controller {
             }
             currentLayout = null;
         }
+        isShowing = false;
+    }
+
+    public boolean isShowing() {
+        return isShowing;
     }
 
     /**
@@ -283,7 +295,7 @@ public class Controller {
             });
         }
 
-        if (v4Fragment != null) {
+        if (v4Fragment != null && v4Fragment.isAdded()) {
             android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
             V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment == null) {
